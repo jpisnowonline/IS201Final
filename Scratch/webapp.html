@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japanese Language Learning Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            text-align: center;
+            padding: 20px;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: black;
+        }
+        .question {
+            margin: 20px 0;
+        }
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+        .options li {
+            margin: 10px 0;
+        }
+        .result, .score, .streak {
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .score-counter, .streak-counter {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ff4081;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Learn Japanese: Quiz Game</h1>
+        <div id="game">
+            <div class="question">
+                <h2 id="question">What does こんにちは mean?</h2>
+                <ul class="options">
+                    <li><button class="button" onclick="checkAnswer('Hello')">Hello</button></li>
+                    <li><button class="button" onclick="checkAnswer('Goodbye')">Goodbye</button></li>
+                    <li><button class="button" onclick="checkAnswer('Thank you')">Thank you</button></li>
+                </ul>
+            </div>
+            <div class="result" id="result"></div>
+            <div class="score">Score: <span id="score" class="score-counter">0</span></div>
+            <div class="streak">Streak: <span id="streak" class="streak-counter">0</span></div>
+            <button class="button" id="restart" onclick="restartGame()" style="display:none;">Restart Game</button>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let streak = 0;
+        let currentQuestion = 0;
+        const questions = [
+            {
+                question: "What does こんにちは mean?",
+                options: ["Hello", "Goodbye", "Thank you"],
+                answer: "Hello"
+            },
+            {
+                question: "What does ありがとう mean?",
+                options: ["Please", "Thank you", "Excuse me"],
+                answer: "Thank you"
+            },
+            {
+                question: "What does さようなら mean?",
+                options: ["Good morning", "Good night", "Goodbye"],
+                answer: "Goodbye"
+            },
+            {
+                question: "What does はい mean?",
+                options: ["Yes", "No", "Maybe"],
+                answer: "Yes"
+            },
+            {
+                question: "What does いいえ mean?",
+                options: ["Yes", "No", "Maybe"],
+                answer: "No"
+            },
+            {
+                question: "What does おはよう mean?",
+                options: ["Good morning", "Good night", "Goodbye"],
+                answer: "Good morning"
+            },
+            {
+                question: "What does こんばんは mean?",
+                options: ["Good morning", "Good evening", "Goodbye"],
+                answer: "Good evening"
+            },
+            {
+                question: "What does すみません mean?",
+                options: ["Excuse me", "Thank you", "Please"],
+                answer: "Excuse me"
+            },
+            {
+                question: "What does どういたしまして mean?",
+                options: ["You're welcome", "Thank you", "Sorry"],
+                answer: "You're welcome"
+            }
+        ];
+
+        function checkAnswer(answer) {
+            const result = document.getElementById('result');
+            if (answer === questions[currentQuestion].answer) {
+                result.textContent = 'Correct!';
+                score++;
+                streak++;
+            } else {
+                result.textContent = 'Incorrect. Try again!';
+                streak = 0;
+            }
+            document.getElementById('score').textContent = score;
+            document.getElementById('streak').textContent = streak;
+            setTimeout(nextQuestion, 1000); // Automatically move to the next question after 1 second
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                document.getElementById('question').textContent = questions[currentQuestion].question;
+                const options = document.querySelector('.options');
+                options.innerHTML = '';
+                questions[currentQuestion].options.forEach(option => {
+                    const li = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.className = 'button';
+                    button.onclick = () => checkAnswer(option);
+                    li.appendChild(button);
+                    options.appendChild(li);
+                });
+                document.getElementById('result').textContent = '';
+            } else {
+                document.getElementById('game').innerHTML = `<h2>Game Over! Your final score is ${score}.</h2><button class="button" onclick="restartGame()">Restart Game</button>`;
+            }
+        }
+
+        function restartGame() {
+            score = 0;
+            streak = 0;
+            currentQuestion = 0;
+            document.getElementById('game').innerHTML = `
+                <div class="question">
+                    <h2 id="question">${questions[currentQuestion].question}</h2>
+                    <ul class="options">
+                        ${questions[currentQuestion].options.map(option => `<li><button class="button" onclick="checkAnswer('${option}')">${option}</button></li>`).join('')}
+                    </ul>
+                </div>
+                <div class="result" id="result"></div>
+                <div class="score">Score: <span id="score" class="score-counter">0</span></div>
+                <div class="streak">Streak: <span id="streak" class="streak-counter">0</span></div>
+                <button class="button" id="restart" onclick="restartGame()" style="display:none;">Restart Game</button>
+            `;
+        }
+    </script>
+    <nav><a href="../index.html">Return to Home</a></nav>
+</body>
+</html>
